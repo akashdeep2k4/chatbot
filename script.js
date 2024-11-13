@@ -28,6 +28,17 @@ const createMessageElement = (content, ...classes) => {
   return div;
 };
 
+const handleServerResponse = (response) => {
+  try {
+    const data = JSON.parse(response);
+    // Process the data
+  } catch (error) {
+    console.error("Failed to parse JSON response:", error);
+    messageElement.innerHTML = "A server error occurred. Please try again.";
+    messageElement.style.color = "#ff0000";
+  }
+};
+
 const generateBotResponse = async (incomingMessageDiv) => {
   const messageElement = incomingMessageDiv.querySelector(".message-text");
 
