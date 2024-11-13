@@ -7,8 +7,8 @@ const fileCancelButton = document.querySelector("#file-cancel");
 const chatbotToggler = document.querySelector("#chatbot-toggler");
 const closeChatbot = document.querySelector("#close-chatbot");
 
-// const API_KEY = "YOURAPIKEY";
-// const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+const API_KEY = "AIzaSyCrzyIQiecxbeQx3Nzm4ymDrHvzfjJpQ2g";
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
 const userData = {
   message: null,
@@ -28,17 +28,6 @@ const createMessageElement = (content, ...classes) => {
   return div;
 };
 
-const handleServerResponse = (response) => {
-  try {
-    const data = JSON.parse(response);
-    // Process the data
-  } catch (error) {
-    console.error("Failed to parse JSON response:", error);
-    messageElement.innerHTML = "A server error occurred. Please try again.";
-    messageElement.style.color = "#ff0000";
-  }
-};
-
 const generateBotResponse = async (incomingMessageDiv) => {
   const messageElement = incomingMessageDiv.querySelector(".message-text");
 
@@ -49,14 +38,14 @@ const generateBotResponse = async (incomingMessageDiv) => {
 
   const requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    Headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       contents: chatHistory,
     }),
   };
 
   try {
-    const response = await fetch("/api/chatbot", requestOptions);
+    const response = await fetch(API_URL, requestOptions);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error.message);
     const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
