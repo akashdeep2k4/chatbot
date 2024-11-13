@@ -7,8 +7,8 @@ const fileCancelButton = document.querySelector("#file-cancel");
 const chatbotToggler = document.querySelector("#chatbot-toggler");
 const closeChatbot = document.querySelector("#close-chatbot");
 
-const API_KEY = "AIzaSyCrzyIQiecxbeQx3Nzm4ymDrHvzfjJpQ2g";
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+// const API_KEY = "YOURAPIKEY";
+// const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
 const userData = {
   message: null,
@@ -38,14 +38,14 @@ const generateBotResponse = async (incomingMessageDiv) => {
 
   const requestOptions = {
     method: "POST",
-    Headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       contents: chatHistory,
     }),
   };
 
   try {
-    const response = await fetch(API_URL, requestOptions);
+    const response = await fetch("/api/chatbot", requestOptions);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error.message);
     const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
