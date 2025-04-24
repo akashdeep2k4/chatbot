@@ -7,8 +7,8 @@ const fileCancelButton = document.querySelector("#file-cancel");
 const chatbotToggler = document.querySelector("#chatbot-toggler");
 const closeChatbot = document.querySelector("#close-chatbot");
 
-const API_KEY = "AIzaSyAZO-6hdjToZ6NbVVsF6aDcUynnnb9shFk";
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+const API_KEY = "AIzaSyBU0VWbRzZkw68c6DpO0XcHs2w6o8VLpY8";
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
 const userData = {
   message: null,
@@ -33,7 +33,10 @@ const generateBotResponse = async (incomingMessageDiv) => {
 
   chatHistory.push({
     role: "user",
-    parts: [{ text: userData.message }, ...(userData.file.data ? [{ inline_data: userData.file }] : [])],
+    parts: [
+      { text: userData.message },
+      ...(userData.file.data ? [{ inline_data: userData.file }] : []),
+    ],
   });
 
   const requestOptions = {
@@ -48,7 +51,9 @@ const generateBotResponse = async (incomingMessageDiv) => {
     const response = await fetch(API_URL, requestOptions);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error.message);
-    const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+    const apiResponseText = data.candidates[0].content.parts[0].text
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .trim();
     messageElement.innerText = apiResponseText;
 
     chatHistory.push({
@@ -74,10 +79,18 @@ const handleOutGoingMessage = (e) => {
   document.body.classList.remove("show-emoji-picker");
   messageInput.dispatchEvent(new Event("input"));
 
-  const messageContent = `<div class="message-text"></div>${userData.file.data ? `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="attachment" />` : ""}`;
+  const messageContent = `<div class="message-text"></div>${
+    userData.file.data
+      ? `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="attachment" />`
+      : ""
+  }`;
 
-  const outgoingMessageDiv = createMessageElement(messageContent, "user-message");
-  outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;
+  const outgoingMessageDiv = createMessageElement(
+    messageContent,
+    "user-message"
+  );
+  outgoingMessageDiv.querySelector(".message-text").textContent =
+    userData.message;
   chatBody.appendChild(outgoingMessageDiv);
   chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" });
 
@@ -94,7 +107,11 @@ const handleOutGoingMessage = (e) => {
         </div>
     </div>`;
 
-    const incomingMessageDiv = createMessageElement(messageContent, "bot-message", "thinking");
+    const incomingMessageDiv = createMessageElement(
+      messageContent,
+      "bot-message",
+      "thinking"
+    );
     chatBody.appendChild(incomingMessageDiv);
     chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" });
     generateBotResponse(incomingMessageDiv);
@@ -103,7 +120,12 @@ const handleOutGoingMessage = (e) => {
 
 messageInput.addEventListener("keydown", (e) => {
   const userMessage = e.target.value.trim();
-  if (e.key === "Enter" && userMessage && !e.shiftKey && window.innerWidth > 768) {
+  if (
+    e.key === "Enter" &&
+    userMessage &&
+    !e.shiftKey &&
+    window.innerWidth > 768
+  ) {
     handleOutGoingMessage(e);
   }
 });
@@ -111,7 +133,8 @@ messageInput.addEventListener("keydown", (e) => {
 messageInput.addEventListener("input", () => {
   messageInput.style.height = `${initialInputHeight}px`;
   messageInput.style.height = `${messageInput.scrollHeight}px`;
-  document.querySelector(".chat-form").style.borderRadius = messageInput.scrollHeight > initialInputHeight ? "15px" : "32px";
+  document.querySelector(".chat-form").style.borderRadius =
+    messageInput.scrollHeight > initialInputHeight ? "15px" : "32px";
 });
 
 fileInput.addEventListener("change", () => {
@@ -159,6 +182,12 @@ const picker = new EmojiMart.Picker({
 document.querySelector(".chat-form").appendChild(picker);
 
 sendMessageButton.addEventListener("click", (e) => handleOutGoingMessage(e));
-document.querySelector("#file-upload").addEventListener("click", () => fileInput.click());
-chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
-closeChatbot.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
+document
+  .querySelector("#file-upload")
+  .addEventListener("click", () => fileInput.click());
+chatbotToggler.addEventListener("click", () =>
+  document.body.classList.toggle("show-chatbot")
+);
+closeChatbot.addEventListener("click", () =>
+  document.body.classList.remove("show-chatbot")
+);
